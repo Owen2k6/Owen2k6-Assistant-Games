@@ -1,7 +1,7 @@
 {
-    "author" : ["Flame442 (Flame#2941)"],
-    "install_msg" : "Thanks for installing my cogs! Feel free to join my support server (https://discord.gg/bYqCjvu) if you have any questions.",
-    "name" : "FlameCogs",
-    "short" : "A mixture of cogs made by Flame.",
-    "description" : "A mixture of cogs made by Flame."
+    "author" : ["Not just Owen2k6"],
+    "install_msg" : "Owen2k6 Assistant stuff...",
+    "name" : "Owen2k6 Assistant Games",
+    "short" : "Owen2k6 Assistant games imported from other repos so i can edit them for Owen2k6 Assistant use.",
+    "description" : "Owen2k6 Assistant games imported from other repos so i can edit them for Owen2k6 Assistant use."
 }

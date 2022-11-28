@@ -1,5 +1,5 @@
 {
-    "author" : ["Flame442 (Flame#2941) & Owen2k6 (Owen#0505)"],
+    "author" : ["Flame442 (Flame#2941)"],
     "install_msg" : "Thanks for installing battleship. Use `[p]battleship` to play.\nThis cog comes with bundled data.",
     "name" : "Battleship",
     "short" : "Play battleship with a friend.",

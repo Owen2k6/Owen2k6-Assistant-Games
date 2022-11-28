@@ -1600,14 +1600,14 @@ class MonopolyGame():
 		darkMode = bool, use a darkmode board instead of a lightmode board.
 		"""
 		pcolor = [
-			(0, 0, 255, 255),
-			(255, 0, 0, 255),
-			(0, 255, 0, 255),
-			(255, 255, 0, 255),
-			(0, 255, 255, 255),
-			(255, 140, 0, 255),
-			(140, 0, 255, 255),
-			(255, 0, 255, 255)
+			(0, 0, 255, 255), #Player 1 DEEP BLUE
+			(255, 0, 0, 255), #Player 2 RED
+			(0, 255, 0, 255), #Player 3 GREEN
+			(255, 255, 0, 255), #Player 4 YELLOW
+			(0, 255, 255, 255), #Player 5 LIGHT BLUE
+			(255, 140, 0, 255), #Player 6 ORANGE
+			(140, 0, 255, 255), #Player 7 DEEP PURPLE
+			(255, 0, 255, 255) #Player 8 PINK
 		]
 		if darkMode:
 			outline = (153,170,181,255)

@@ -67,7 +67,8 @@ class Monopoly(commands.Cog):
             self.games.append(game)
         else:
             uid = [ctx.author.id]
-            await ctx.send('Welcome to Monopoly. \nRemember to save frequently to avoid crashes and data loss. \nHow many players?')
+            await ctx.send(
+                'Welcome to Monopoly. \nRemember to save frequently to avoid crashes and data loss. \nHow many players?')
 
             def check(m):
                 if m.author != ctx.author or m.channel != ctx.channel:

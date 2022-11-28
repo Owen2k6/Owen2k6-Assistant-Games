@@ -47,7 +47,6 @@ class BattleshipGame():
             'and post it in the support channel of <https://discord.gg/bYqCjvu>.'
         )
 
-
     async def send_forbidden(self, ctx):
         """Sends a message to the channel warning that a player could not be DMed."""
         await ctx.send(

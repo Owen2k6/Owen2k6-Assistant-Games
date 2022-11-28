@@ -351,7 +351,7 @@ class MonopolyGame():
                     await self.land(d1 + d2)
             # If not in jail, start a normal turn
             while self.was_doubles and self.isalive[self.p]:
-                self.msg += '`r`: Roll\n`t`: Trade\n`h`: Manage houses\n`m`: Mortgage properties\n`q`: Quit game and forfeit '
+                self.msg += '```-```\n`r`: Roll\n`t`: Trade\n`h`: Manage houses\n`m`: Mortgage properties\n`q`: Quit game and forfeit\n'
                 if self.num_doubles == 0:
                     self.msg += '`s`: Save\n'
                 if self.is_ai(self.p):
@@ -446,9 +446,9 @@ class MonopolyGame():
                                     and m.content.lower() in ('y', 'yes', 'n', 'no')
                             )
                         )
-                    choice = choice.content[0].lower()
-                    if choice == 'n':
-                        continue
+                        choice = choice.content[0].lower()
+                        if choice == 'n':
+                            continue
                     for i in range(40):
                         if self.ownedby[i] == self.p:
                             self.ownedby[i] = -1
@@ -456,14 +456,12 @@ class MonopolyGame():
                             self.ismortgaged[i] = 0
                     self.numalive -= 1
                     self.isalive[self.p] = False
-                    self.injail[self.p] = False  # prevent them from executing jail code
                     mem = await self.get_member(self.uid[self.p])
                     self.msg += f'{mem.display_name} has left the game.\n'
-                    return
 
             # After roll
             while self.isalive[self.p]:
-                self.msg += '`t`: Trade\n`h`: Manage houses\n`m`: Mortgage properties\n`d`: Done\n'
+                self.msg += '```-```\n`t`: Trade\n`h`: Manage houses\n`m`: Mortgage properties\n`d`: Done\n'
                 if self.is_ai(self.p):
                     config = await self.cog.config.guild(self.ctx.guild).all()
                     choice = self.uid[self.p].turn(self, config, ('t', 'h', 'm', 'd'))
@@ -957,7 +955,7 @@ class MonopolyGame():
             self.msg += (
                 f'You are in debt. You have ${self.bal[self.p]}.\n'
                 'Select an option to get out of debt:\n'
-                '`t`: Trade\n`h`: Manage houses\n`m`: Mortgage properties\n`g`: Give up\n'
+                '```-```\n`t`: Trade\n`h`: Manage houses\n`m`: Mortgage properties\n`g`: Give up\n'
             )
             if self.is_ai(self.p):
                 config = await self.cog.config.guild(self.ctx.guild).all()

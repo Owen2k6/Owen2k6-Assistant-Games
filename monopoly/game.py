@@ -348,7 +348,7 @@ class MonopolyGame():
 					await self.land(d1 + d2)
 			#If not in jail, start a normal turn
 			while self.was_doubles and self.isalive[self.p]:
-				self.msg += '`r`: Roll\n`t`: Trade\n`h`: Manage houses\n`m`: Mortgage properties\n'
+				self.msg += '`r`: Roll\n`t`: Trade\n`h`: Manage houses\n`m`: Mortgage properties\n`q`: Quit game and forfeit '
 				if self.num_doubles == 0:
 					self.msg += '`s`: Save\n'
 				if self.is_ai(self.p):
@@ -362,7 +362,7 @@ class MonopolyGame():
 						check=lambda m: (
 							m.author.id == self.uid[self.p]
 							and m.channel == self.ctx.channel
-							and m.content.lower() in ('r', 't', 'h', 'm', 's')
+							and m.content.lower() in ('r', 't', 'h', 'm', 's', 'q')
 						)
 					)
 					choice = choice.content.lower()
@@ -430,6 +430,34 @@ class MonopolyGame():
 								'You can load your save with '
 								f'`{self.ctx.prefix}monopoly {savename}`.'
 							)
+
+				elif choice == 'q':
+					if not self.is_ai(self.p):
+						await self.ctx.send('Are you sure? (y/n)')
+						choice = await self.bot.wait_for(
+						'message',
+						timeout=await self.cog.config.guild(self.ctx.guild).timeoutValue(),
+						check=lambda m: (
+								m.author.id == self.uid[self.p]
+								and m.channel == self.ctx.channel
+								and m.content.lower() in ('y', 'yes', 'n', 'no')
+						)
+					)
+					choice = choice.content[0].lower()
+					if choice == 'n':
+						continue
+					for i in range(40):
+						if self.ownedby[i] == self.p:
+							self.ownedby[i] = -1
+							self.numhouse[i] = 0
+							self.ismortgaged[i] = 0
+					self.numalive -= 1
+					self.isalive[self.p] = False
+					self.injail[self.p] = False #prevent them from executing jail code
+					mem = await self.get_member(self.uid[self.p])
+					self.msg += f'{mem.display_name} has left the game.\n'
+					return
+
 			#After roll
 			while self.isalive[self.p]:
 				self.msg += '`t`: Trade\n`h`: Manage houses\n`m`: Mortgage properties\n`d`: Done\n'

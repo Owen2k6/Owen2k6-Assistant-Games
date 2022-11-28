@@ -152,7 +152,7 @@ class Hangman(commands.Cog):
             guessed += t
             if t not in word:
                 fails += 1
-                if fails == 6:  # too many fails
+                if fails == 18:  # too many fails
                     p = self._get_message(word, guessed)
                     p = f'```{self.man[fails]}\n{p}```Game Over\nThe word was {word}.'
                     if doEdit:

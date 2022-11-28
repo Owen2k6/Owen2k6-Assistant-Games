@@ -1,0 +1,11 @@
+{
+    "author" : ["Flame442 (Flame#2941)"],
+    "install_msg" : "Thanks for installing battleship. Use `[p]battleship` to play.\nThis cog comes with bundled data.",
+    "name" : "Battleship",
+    "short" : "Play battleship with a friend.",
+    "requirements" : ["pillow"],
+    "description" : "Play battleship with a friend.",
+    "tags" : ["fun", "games", "battleship"],
+    "min_python_version": [3, 6, 0],
+    "end_user_data_statement": "This cog does not store user data."
+}

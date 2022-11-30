@@ -1,6 +1,7 @@
 {
-  "author": [
-    "Flame442 (Flame#2941)"
+  "authors": [
+    "Flame442 (Flame#2941)",
+    "Owen2k6 (Owen#0505)"
   ],
   "install_msg": "Thanks for installing monopoly. Use `[p]monopoly` to play.\nThis cog comes with bundled data.",
   "name": "Monopoly",

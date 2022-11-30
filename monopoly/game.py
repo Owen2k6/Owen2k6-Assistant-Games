@@ -123,13 +123,13 @@ class MonopolyGame():
 	async with self.cog.config.guild(self.ctx.guild).saves() as saves:
             saves[savename] = self.autosave
         await self.ctx.send(
-	    '@'
-            'A fatal error has occurred, shutting down.\n'
-            'The error originated from the Monopoly game. \n'
-            'Please open a ticket with a screenshot of the error. thanks'
+	    'Ping Owen#0505 (The bot owner) on this issue!'
+            '> A fatal error has occurred, shutting down.\n'
+            '> The error originated from the Monopoly game. \n'
+            '> Please open a ticket with a screenshot of the error. Thanks! \n'
             f'> Your game was saved to `{savename}`.\n'
             f'> You can load your save with `{self.ctx.prefix}monopoly {savename}`. \n'
-	    f'**There is a chance that the game will fail to save.**'
+	    '> **There is a chance that the game will fail to save.**'
         )
         async with self.cog.config.guild(self.ctx.guild).saves() as saves:
             saves[savename] = self.autosave
@@ -355,7 +355,7 @@ class MonopolyGame():
                     await self.land(d1 + d2)
             # If not in jail, start a normal turn
             while self.was_doubles and self.isalive[self.p]:
-                self.msg += '```-```\n`r`: Roll\n`t`: Trade\n`h`: Manage houses\n`m`: Mortgage properties\n`q`: Quit game and forfeit\n'
+                self.msg += '```Make your selection.```\n`r`: Roll\n`t`: Trade\n`h`: Manage houses\n`m`: Mortgage properties\n`q`: Quit game and forfeit\n'
                 if self.num_doubles == 0:
                     self.msg += '`s`: Save\n'
                 if self.is_ai(self.p):
@@ -465,7 +465,7 @@ class MonopolyGame():
 
             # After roll
             while self.isalive[self.p]:
-                self.msg += '```-```\n`t`: Trade\n`h`: Manage houses\n`m`: Mortgage properties\n`d`: Done\n'
+                self.msg += '```Make your selection.```\n`t`: Trade\n`h`: Manage houses\n`m`: Mortgage properties\n`d`: Done\n'
                 if self.is_ai(self.p):
                     config = await self.cog.config.guild(self.ctx.guild).all()
                     choice = self.uid[self.p].turn(self, config, ('t', 'h', 'm', 'd'))
@@ -939,27 +939,27 @@ class MonopolyGame():
             highest = int(bid_msg.content)
             highp = self.uid.index(bid_msg.author.id)
             await self.ctx.send(
-                f'{bid_msg.author.display_name} has the highest bid with ${highest}.'
+                f'> {bid_msg.author.display_name} has the highest bid with ${highest}.'
             )
         if highp is None:
-            self.msg = 'Nobody bid...\n'
+            self.msg = '> Nobody has placed a bid. the property remains unowned...\n'
         else:
             memwin = await self.get_member(self.uid[highp])
             self.bal[highp] -= highest
             self.ownedby[self.tile[self.p]] = highp
             self.msg = (
-                f'{memwin.display_name} wins with a bid of ${highest}!\n'
-                f'{memwin.display_name} now owns {TILENAME[self.tile[self.p]]} '
-                f'and has ${self.bal[highp]}.\n'
+                f'> {memwin.display_name} wins with a bid of ${highest}!\n'
+                f'> {memwin.display_name} now owns {TILENAME[self.tile[self.p]]} '
+                f'> and has ${self.bal[highp]}.\n'
             )
 
     async def debt(self):
         """Handle players who have a negative balance."""
         while self.bal[self.p] < 0 and self.isalive[self.p]:
             self.msg += (
-                f'You are in debt. You have ${self.bal[self.p]}.\n'
-                'Select an option to get out of debt:\n'
-                '```-```\n`t`: Trade\n`h`: Manage houses\n`m`: Mortgage properties\n`g`: Give up\n'
+                f'> You are in debt. You have ${self.bal[self.p]}.\n'
+                '> Select an option to get out of debt:\n'
+                '```Make your selection.```\n`t`: Trade\n`h`: Manage houses\n`m`: Mortgage properties\n`g`: Give up\n'
             )
             if self.is_ai(self.p):
                 config = await self.cog.config.guild(self.ctx.guild).all()
@@ -984,7 +984,7 @@ class MonopolyGame():
                 await self.mortgage()
             elif choice == 'g':
                 if not self.is_ai(self.p):
-                    await self.ctx.send('Are you sure? (y/n)')
+                    await self.ctx.send('> Are you sure? (y/n)')
                     choice = await self.bot.wait_for(
                         'message',
                         timeout=await self.cog.config.guild(self.ctx.guild).timeoutValue(),
@@ -1006,7 +1006,7 @@ class MonopolyGame():
                 self.isalive[self.p] = False
                 self.injail[self.p] = False  # prevent them from executing jail code
                 mem = await self.get_member(self.uid[self.p])
-                self.msg += f'{mem.display_name} is now out of the game.\n'
+                self.msg += f'> {mem.display_name} is now out of the game.\n'
                 return
         self.msg += f'> You are now out of debt. You now have ${self.bal[self.p]}.\n'
 
@@ -1098,7 +1098,7 @@ class MonopolyGame():
             )
             choice = choice.content.lower()
             if choice == 'm':
-                await self.ctx.send(f'How much money? You have ${self.bal[self.p]}.')
+                await self.ctx.send(f'> How much money? You have ${self.bal[self.p]}.')
                 money = await self.bot.wait_for(
                     'message',
                     timeout=await self.cog.config.guild(self.ctx.guild).timeoutValue(),
@@ -1110,19 +1110,19 @@ class MonopolyGame():
                 try:
                     money = int(money.content)
                 except:
-                    self.msg += 'You need to specify a number.\n'
+                    self.msg += '> You need to specify a number.\n'
                 else:
                     if money > self.bal[self.p]:
-                        self.msg += 'You do not have that much money.\n'
+                        self.msg += '> You do not have that much money.\n'
                     elif money < 0:
-                        self.msg += 'You cannot give a negative amount of money.\n'
+                        self.msg += '> You cannot give a negative amount of money.\n'
                     else:
                         money_p = money
             elif choice == 'j':
                 if self.goojf[self.p] == 0:
-                    self.msg += 'You do not have any get out of jail free cards to give.\n'
+                    self.msg += '> You do not have any get out of jail free cards to give.\n'
                     continue
-                await self.ctx.send(f'How many? You have {self.goojf[self.p]}.')
+                await self.ctx.send(f'> How many? You have {self.goojf[self.p]}.')
                 cards = await self.bot.wait_for(
                     'message',
                     timeout=await self.cog.config.guild(self.ctx.guild).timeoutValue(),
@@ -1134,12 +1134,12 @@ class MonopolyGame():
                 try:
                     cards = int(cards.content)
                 except:
-                    self.msg += 'You need to specify a number.\n'
+                    self.msg += '> You need to specify a number.\n'
                 else:
                     if cards > self.goojf[self.p]:
-                        self.msg += 'You do not have that many get out of jail free cards.\n'
+                        self.msg += '> You do not have that many get out of jail free cards.\n'
                     elif cards < 0:
-                        self.msg += 'You cannot give a negative amount of get out of jail free cards.\n'
+                        self.msg += '> You cannot give a negative amount of get out of jail free cards.\n'
                     else:
                         goojf_p = cards
             elif choice == 'd':
@@ -1198,19 +1198,19 @@ class MonopolyGame():
                 try:
                     money = int(money.content)
                 except:
-                    self.msg += 'You need to specify a number.\n'
+                    self.msg += '> You need to specify a number.\n'
                 else:
                     if money > self.bal[partner]:
-                        self.msg += 'They do not have that much money.\n'
+                        self.msg += '> They do not have that much money.\n'
                     elif money < 0:
-                        self.msg += 'You cannot take a negative amount of money.\n'
+                        self.msg += '> You cannot take a negative amount of money.\n'
                     else:
                         money_partner = money
             elif choice == 'j':
                 if self.goojf[partner] == 0:
-                    self.msg += 'They do not have any get out of jail free cards to give.\n'
+                    self.msg += '> They do not have any get out of jail free cards to give.\n'
                     continue
-                await self.ctx.send(f'How many? They have {self.goojf[partner]}.')
+                await self.ctx.send(f'> How many? They have {self.goojf[partner]}.')
                 cards = await self.bot.wait_for(
                     'message',
                     timeout=await self.cog.config.guild(self.ctx.guild).timeoutValue(),
@@ -1222,12 +1222,12 @@ class MonopolyGame():
                 try:
                     cards = int(cards.content)
                 except:
-                    self.msg += 'You need to specify a number.\n'
+                    self.msg += '> You need to specify a number.\n'
                 else:
                     if cards > self.goojf[partner]:
-                        self.msg += 'They do not have that many get out of jail free cards.\n'
+                        self.msg += '> They do not have that many get out of jail free cards.\n'
                     elif cards < 0:
-                        self.msg += 'You cannot take a negative amount of get out of jail free cards.\n'
+                        self.msg += '> You cannot take a negative amount of get out of jail free cards.\n'
                     else:
                         goojf_partner = cards
             elif choice == 'd':
@@ -1292,9 +1292,9 @@ class MonopolyGame():
         else:
             mention = member_partner.display_name
         self.msg += (
-            f'{mention}, {member_p.display_name} would like to trade with you. '
-            f'Here is their offer.\n\nYou will give:\n```\n{hold_partner}```\n'
-            f'You will get:\n```\n{hold_p}```\nDo you accept (y/n)?\n'
+            f'> {mention}, {member_p.display_name} would like to trade with you. \n'
+            f'> Here is their offer.\n\n> You will give:\n```\n{hold_partner}```\n'
+            f'> You will get:\n > ```\n{hold_p}```\n> Do you accept (y/n)?\n'
         )
         if self.is_ai(partner):
             temp_p = [x for idx, x in enumerate(tradeable_p) if to_trade_p[idx]]
@@ -1346,7 +1346,7 @@ class MonopolyGame():
                 continue
             houseable.append(color)
         if not houseable:
-            self.msg += 'You do not have any properties that are eligible for houses.\n'
+            self.msg += '> You do not have any properties that are eligible for houses.\n'
             return
         while True:
             self.msg += '```\nid price color\n'
@@ -1417,27 +1417,27 @@ class MonopolyGame():
                     total_houses = sum(x for x in test if x in (1, 2, 3, 4))
                     if total_houses > houseLimit and houseLimit != -1:
                         self.msg += (
-                            'There are not enough houses for that setup.'
-                            f'\nMax houses: `{houseLimit}`\nRequired houses: `{total_houses}`\n'
+                            '> There are not enough houses for that setup.'
+                            f'\n> Max houses: `{houseLimit}`\n> Required houses: `{total_houses}`\n'
                         )
                         continue
                     hotelLimit = await self.cog.config.guild(self.ctx.guild).hotelLimit()
                     total_hotels = sum(1 for x in test if x == 5)
                     if total_hotels > hotelLimit and hotelLimit != -1:
                         self.msg += (
-                            'There are not enough hotels for that setup.'
-                            f'\nMax hotels: `{hotelLimit}`\nRequired houses: `{total_hotels}`\n'
+                            '> There are not enough hotels for that setup.'
+                            f'\n> Max hotels: `{hotelLimit}`\n> Required houses: `{total_hotels}`\n'
                         )
                         continue
                     change = 0
                     for a in range(len(new_values)):
                         change += new_values[a] - self.numhouse[props[a]]
                     if change == 0:
-                        self.msg += 'No houses were changed.\n'
+                        self.msg += '> No houses were changed.\n'
                         break
                     price = abs(change) * HOUSEPRICE[props[0]]
                     if price > self.bal[self.p] and change > 0:
-                        self.msg += 'You cannot afford to buy that many houses.\n'
+                        self.msg += '> You cannot afford to buy that many houses.\n'
                         continue
                     if not self.is_ai(self.p):
                         if abs(change) == 1:
@@ -1446,16 +1446,16 @@ class MonopolyGame():
                             plural = 's'
                         if change > 0:
                             await self.ctx.send(
-                                f'Are you sure you want to buy {change} house{plural}? (y/n)\n'
-                                f'It will cost ${price} at ${HOUSEPRICE[props[0]]} per house. '
-                                f'You currently have ${self.bal[self.p]}.'
+                                f'> Are you sure you want to buy {change} house{plural}? (y/n)\n'
+                                f'> It will cost ${price} at ${HOUSEPRICE[props[0]]} per house.\n'
+                                f'> You currently have ${self.bal[self.p]}.'
                             )
                         else:
                             await self.ctx.send(
-                                f'Are you sure you want to sell {abs(change)} house{plural}? (y/n)\n'
-                                f'You will get ${price // 2} at '
-                                f'${HOUSEPRICE[props[0]] // 2} per house. '
-                                f'You currently have ${self.bal[self.p]}.'
+                                f'> Are you sure you want to sell {abs(change)} house{plural}? (y/n)\n'
+                                f'> You will get ${price // 2} at '
+                                f'${HOUSEPRICE[props[0]] // 2} per house. \n'
+                                f'> You currently have ${self.bal[self.p]}.'
                             )
                         choice = await self.bot.wait_for(
                             'message',
@@ -1479,7 +1479,7 @@ class MonopolyGame():
                     break
                 else:
                     choice = int(choice)
-                    self.msg += f'How many houses do you want on {TILENAME[props[choice]]}?\n`c`: Cancel\n'
+                    self.msg += f'> How many houses do you want on {TILENAME[props[choice]]}?\n`c`: Cancel\n'
                     if self.is_ai(self.p):
                         value = self.uid[self.p].grab_from_cache()
                     else:
@@ -1516,7 +1516,7 @@ class MonopolyGame():
             if groupHasHouse:
                 mortgageable.remove(a)
         if not mortgageable:
-            self.msg += 'You do not have any properties that are able to be mortgaged.\n'
+            self.msg += '> You do not have any properties that are able to be mortgaged.\n'
             return
         while True:
             self.msg += '```\nid isM price color      name\n'
@@ -1552,9 +1552,9 @@ class MonopolyGame():
             if self.ismortgaged[mortgageable[choice]] == 0:
                 if not self.is_ai(self.p):
                     await self.ctx.send(
-                        f'Mortgage {TILENAME[mortgageable[choice]]} for '
+                        f'> Mortgage {TILENAME[mortgageable[choice]]} for '
                         f'${MORTGAGEPRICE[mortgageable[choice]]}? (y/n)\n'
-                        f'You have ${self.bal[self.p]}.'
+                        f'> You have ${self.bal[self.p]}.'
                     )
                     yes_or_no = await self.bot.wait_for(
                         'message',
@@ -1575,10 +1575,10 @@ class MonopolyGame():
                 if self.bal[self.p] >= TENMORTGAGEPRICE[mortgageable[choice]]:
                     if not self.is_ai(self.p):
                         await self.ctx.send(
-                            f'Unmortgage {TILENAME[mortgageable[choice]]} for '
+                            f'> Unmortgage {TILENAME[mortgageable[choice]]} for '
                             f'${TENMORTGAGEPRICE[mortgageable[choice]]}? (y/n) '
                             f'(${MORTGAGEPRICE[mortgageable[choice]]} + 10% interest)\n'
-                            f'You have ${self.bal[self.p]}.'
+                            f'> You have ${self.bal[self.p]}.'
                         )
                         yes_or_no = await self.bot.wait_for(
                             'message',
@@ -1597,7 +1597,7 @@ class MonopolyGame():
                     self.msg += f'You now have ${self.bal[self.p]}.\n'
                 else:
                     self.msg += (
-                        f'You cannot afford the ${TENMORTGAGEPRICE[mortgageable[choice]]} '
+                        f'> You cannot afford the ${TENMORTGAGEPRICE[mortgageable[choice]]} '
                         f'it would take to unmortgage that. You only have ${self.bal[self.p]}.\n'
                     )
 

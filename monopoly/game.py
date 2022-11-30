@@ -120,16 +120,16 @@ class MonopolyGame():
     async def send_error(self):
         """Sends a message to the channel after an error."""
         savename = str(self.ctx.message.id)
-	async with self.cog.config.guild(self.ctx.guild).saves() as saves:
+        async with self.cog.config.guild(self.ctx.guild).saves() as saves:
             saves[savename] = self.autosave
         await self.ctx.send(
-	    'Ping Owen#0505 (The bot owner) on this issue!'
+            'Ping Owen#0505 (The bot owner) on this issue!'
             '> A fatal error has occurred, shutting down.\n'
             '> The error originated from the Monopoly game. \n'
             '> Please open a ticket with a screenshot of the error. Thanks! \n'
             f'> Your game was saved to `{savename}`.\n'
             f'> You can load your save with `{self.ctx.prefix}monopoly {savename}`. \n'
-	    '> **There is a chance that the game will fail to save.**'
+            '> **There is a chance that the game will fail to save.**'
         )
         async with self.cog.config.guild(self.ctx.guild).saves() as saves:
             saves[savename] = self.autosave

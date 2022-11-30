@@ -120,12 +120,16 @@ class MonopolyGame():
     async def send_error(self):
         """Sends a message to the channel after an error."""
         savename = str(self.ctx.message.id)
+	async with self.cog.config.guild(self.ctx.guild).saves() as saves:
+            saves[savename] = self.autosave
         await self.ctx.send(
+	    '@'
             'A fatal error has occurred, shutting down.\n'
-            'Please have the bot owner copy the error from console '
-            'and post it in the support channel of <https://discord.gg/bYqCjvu>.\n'
-            f'Your game was saved to `{savename}`.\n'
-            f'You can load your save with `{self.ctx.prefix}monopoly {savename}`.'
+            'The error originated from the Monopoly game. \n'
+            'Please open a ticket with a screenshot of the error. thanks'
+            f'> Your game was saved to `{savename}`.\n'
+            f'> You can load your save with `{self.ctx.prefix}monopoly {savename}`. \n'
+	    f'**There is a chance that the game will fail to save.**'
         )
         async with self.cog.config.guild(self.ctx.guild).saves() as saves:
             saves[savename] = self.autosave
@@ -134,9 +138,9 @@ class MonopolyGame():
         """Cleanup code when a user times out."""
         savename = str(self.ctx.message.id)
         await self.ctx.send(
-            'You did not respond in time.\n'
-            f'Your game was saved to `{savename}`.\n'
-            f'You can load your save with `{self.ctx.prefix}monopoly {savename}`.'
+            '> Game Timeout. Please relaunch when the user is back online.\n'
+            f'> We have saved your game as: `{savename}`.\n'
+            f'> You can load it again with `{self.ctx.prefix}monopoly {savename}`.'
         )
         async with self.cog.config.guild(self.ctx.guild).saves() as saves:
             saves[savename] = self.autosave
@@ -191,9 +195,9 @@ class MonopolyGame():
             else:
                 msg = f'A player with the user ID `{uid}`'
             await self.ctx.send(
-                f'{msg} in the current game is no longer in this guild.\n'
-                f'Your game was saved to `{savename}`.\n'
-                f'You can load your save with `{self.ctx.prefix}monopoly {savename}`.'
+                f'> {msg} has left the server. The game wont continue without them!!\n'
+                f'> If they rejoin, The game was saved as `{savename}`.\n'
+                f'> You can load your save with `{self.ctx.prefix}monopoly {savename}`.'
             )
             async with self.cog.config.guild(self.ctx.guild).saves() as saves:
                 saves[savename] = self.autosave
@@ -515,14 +519,14 @@ class MonopolyGame():
             )
         self.msg += f'You landed at {TILENAME[self.tile[self.p]]}.\n'
         if self.ownedby[self.tile[self.p]] == self.p:  # player is owner
-            self.msg += 'You own this property already.\n'
+            self.msg += 'This is your property!\n'
         elif self.ismortgaged[self.tile[self.p]] == 1:  # mortgaged
-            self.msg += 'It is currently mortgaged. No rent is due.\n'
+            self.msg += 'The property is currently mortgaged by the bank. You wont have to pay rent!\n'
         elif self.ownedby[self.tile[self.p]] == -2:  # unownable
             if self.tile[self.p] == 0:  # go
                 pass  # already handled when moving
             elif self.tile[self.p] == 10:  # jail
-                self.msg += 'Just visiting!\n'
+                self.msg += 'You\'re just visiting, no need to worry!\n'
             elif self.tile[self.p] == 20:  # free parking
                 freeParkingValue = await self.cog.config.guild(self.ctx.guild).freeParkingValue()
                 if freeParkingValue is None:  # no reward
@@ -721,9 +725,9 @@ class MonopolyGame():
                 elif card == 6:
                     self.goojf[self.p] += 1
                     if self.goojf[self.p] == 1:
-                        self.msg += 'You now have 1 get out of jail free card.\n'
+                        self.msg += '> You now have 1 get out of jail free card.\n'
                     else:
-                        self.msg += f'You now have {self.goojf[self.p]} get out of jail free cards.\n'
+                        self.msg += f'> You now have {self.goojf[self.p]} get out of jail free cards.\n'
                 elif card == 7:
                     self.tile[self.p] -= 3
                     await self.land(0)
@@ -896,10 +900,10 @@ class MonopolyGame():
         """Hold auctions for unwanted properties."""
         minRaise = await self.cog.config.guild(self.ctx.guild).minRaise()
         self.msg += (
-            f'{TILENAME[self.tile[self.p]]} is now up for auction!\n'
-            'Anyone can bid by typing the value of their bid. '
-            f'Bids must increase the price by ${minRaise}. '
-            'After 15 seconds with no bids, the highest bid will win.'
+            f'> {TILENAME[self.tile[self.p]]} is now up for auction!\n'
+            '> Anyone can bid by typing the value of their bid. '
+            f'> Bids must increase the price by ${minRaise}. '
+            '> After 15 seconds with no bids, the highest bid will win.'
         )
         await self.send(img=True)
         highest = None
@@ -1004,7 +1008,7 @@ class MonopolyGame():
                 mem = await self.get_member(self.uid[self.p])
                 self.msg += f'{mem.display_name} is now out of the game.\n'
                 return
-        self.msg += f'You are now out of debt. You now have ${self.bal[self.p]}.\n'
+        self.msg += f'> You are now out of debt. You now have ${self.bal[self.p]}.\n'
 
     async def trade(self):
         """Trade properties between players."""

@@ -160,7 +160,7 @@ class Hangman(commands.Cog):
                     else:
                         await ctx.send(p)
                     game = False
-                    continue
+                    return
             # guessed entire word
             if (
                     ''.join(c for c in word if c in guessed) ==

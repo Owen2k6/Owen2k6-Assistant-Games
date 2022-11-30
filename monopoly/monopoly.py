@@ -54,10 +54,10 @@ class Monopoly(commands.Cog):
             saves = await self.config.guild(ctx.guild).saves()
             if savefile not in saves:
                 return await ctx.send(
-                    'There is no save file with that name.\n'
-                    'Does it need to be converted? '
+                    '> There is no save file with that name.\n'
+                    '> Does it need to be converted? '
                     'Is it saved in another guild?\n'
-                    f'Use `{ctx.prefix}monopoly list` to list save files.'
+                    f'> Use `{ctx.prefix}monopoly list` to list save files.'
                 )
             data = saves[savefile]
             if ctx.author.id not in data['uid']:
@@ -68,7 +68,7 @@ class Monopoly(commands.Cog):
         else:
             uid = [ctx.author.id]
             await ctx.send(
-                'Welcome to Monopoly. \nRemember to save frequently to avoid crashes and data loss. \nHow many players?')
+                '> Welcome to Monopoly. \n> Remember to save frequently to avoid crashes and data loss. \n> How many players?')
 
             def check(m):
                 if m.author != ctx.author or m.channel != ctx.channel:

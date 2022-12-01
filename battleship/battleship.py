@@ -25,7 +25,7 @@ class Battleship(commands.Cog):
     async def battleship(self, ctx):
         """Start a game of battleship."""
         if [game for game in self.games if game.ctx.channel == ctx.channel]:
-            return await ctx.send('A game is already running in this channel.')
+            return await ctx.send('> A game is already running in this channel.')
         check = lambda m: (
                 not m.author.bot
                 and m.channel == ctx.message.channel
@@ -34,19 +34,19 @@ class Battleship(commands.Cog):
                         or (m.author == ctx.message.author and m.content.lower() == 'ai')
                 )
         )
-        await ctx.send('Second player, say I.\nOr say AI to play against the bot.')
+        await ctx.send('> Second player, say I.\n> Or say AI to play against the bot.')
         try:
             r = await self.bot.wait_for('message', timeout=60, check=check)
         except asyncio.TimeoutError:
-            return await ctx.send('Nobody else wants to play, shutting down.')
+            return await ctx.send('> Nobody else wants to play, shutting down.')
         if [game for game in self.games if game.ctx.channel == ctx.channel]:
-            return await ctx.send('Another game started in this channel while setting up.')
+            return await ctx.send('> Another game started in this channel while setting up.')
         if r.content.lower() == 'ai':
             p2 = BattleshipAI(ctx.guild.me.display_name)
         else:
             p2 = r.author
         await ctx.send(
-            'A game of battleship will be played between '
+            '> A game of battleship will be played between '
             f'{ctx.author.display_name} and {p2.display_name}.'
         )
         game = BattleshipGame(ctx, self.bot, self, ctx.author, p2)
@@ -62,9 +62,9 @@ class Battleship(commands.Cog):
             game._task.cancel()
             wasGame = True
         if wasGame:  # prevent multiple messages if more than one game exists for some reason
-            await ctx.send('The game was stopped successfully.')
+            await ctx.send('> The game was stopped successfully.')
         else:
-            await ctx.send('There is no ongoing game in this channel.')
+            await ctx.send('> There is no ongoing game in this channel.')
 
     @commands.command()
     async def battleshipboard(self, ctx, channel: int):
@@ -76,11 +76,11 @@ class Battleship(commands.Cog):
         game = [game for game in self.games if game.ctx.channel.id == channel]
         if not game:
             return await ctx.send(
-                'There is no game in that channel or that channel does not exist.'
+                '> There is no game in that channel or that channel does not exist.'
             )
         game = [g for g in game if ctx.author.id in [m.id for m in g.player]]
         if not game:
-            return await ctx.send('You are not in that game.')
+            return await ctx.send('> You are not in that game.')
         game = game[0]
         p = [m.id for m in game.player].index(ctx.author.id)
         await game.send_board(p, 1, ctx, '')
@@ -93,9 +93,9 @@ class Battleship(commands.Cog):
         await ctx.send_help()
         cfg = await self.config.guild(ctx.guild).all()
         msg = (
-            'Extra shot on hit: {extraHit}\n'
-            'Mention on turn: {doMention}\n'
-            'Display the board using an image: {doImage}'
+            '> Extra shot on hit: {extraHit}\n'
+            '> Mention on turn: {doMention}\n'
+            '> Display the board using an image: {doImage}'
         ).format_map(cfg)
         await ctx.send(f'```py\n{msg}```')
 
@@ -110,15 +110,15 @@ class Battleship(commands.Cog):
         if value is None:
             v = await self.config.guild(ctx.guild).extraHit()
             if v:
-                await ctx.send('You are currently able to shoot again after a hit.')
+                await ctx.send('> You are currently able to shoot again after a hit.')
             else:
-                await ctx.send('You are currently not able to shoot again after a hit.')
+                await ctx.send('> You are currently not able to shoot again after a hit.')
         else:
             await self.config.guild(ctx.guild).extraHit.set(value)
             if value:
-                await ctx.send('You will now be able to shoot again after a hit.')
+                await ctx.send('> You will now be able to shoot again after a hit.')
             else:
-                await ctx.send('You will no longer be able to shoot again after a hit.')
+                await ctx.send('> You will no longer be able to shoot again after a hit.')
 
     @battleshipset.command()
     async def mention(self, ctx, value: bool = None):
@@ -131,15 +131,15 @@ class Battleship(commands.Cog):
         if value is None:
             v = await self.config.guild(ctx.guild).doMention()
             if v:
-                await ctx.send('Players are being mentioned when their turn begins.')
+                await ctx.send('> Players are being mentioned when their turn begins.')
             else:
-                await ctx.send('Players are not being mentioned when their turn begins.')
+                await ctx.send('> Players are not being mentioned when their turn begins.')
         else:
             await self.config.guild(ctx.guild).doMention.set(value)
             if value:
-                await ctx.send('Players will be mentioned when their turn begins.')
+                await ctx.send('> Players will be mentioned when their turn begins.')
             else:
-                await ctx.send('Players will not be mentioned when their turn begins.')
+                await ctx.send('> Players will not be mentioned when their turn begins.')
 
     @battleshipset.command()
     async def imgboard(self, ctx, value: bool = None):
@@ -152,15 +152,15 @@ class Battleship(commands.Cog):
         if value is None:
             v = await self.config.guild(ctx.guild).doImage()
             if v:
-                await ctx.send('The board is currently displayed using an image.')
+                await ctx.send('> The board is currently displayed using an image.')
             else:
-                await ctx.send('The board is currently displayed using text.')
+                await ctx.send('> The board is currently displayed using text.')
         else:
             await self.config.guild(ctx.guild).doImage.set(value)
             if value:
-                await ctx.send('The board will now be displayed using an image.')
+                await ctx.send('> The board will now be displayed using an image.')
             else:
-                await ctx.send('The board will now be displayed using text.')
+                await ctx.send('> The board will now be displayed using text.')
 
     def cog_unload(self):
         return [game._task.cancel() for game in self.games]

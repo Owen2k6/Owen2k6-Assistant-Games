@@ -42,15 +42,14 @@ class BattleshipGame():
     async def send_error(self, ctx):
         """Sends a message to the channel after an error."""
         await ctx.send(
-            'A fatal error has occurred, shutting down.\n'
-            'Please have the bot owner copy the error from console '
-            'and post it in the support channel of <https://discord.gg/bYqCjvu>.'
+            '> A fatal error has occurred, shutting down.\n'
+            '> Please have the bot owner copy the error from console '
         )
 
     async def send_forbidden(self, ctx):
         """Sends a message to the channel warning that a player could not be DMed."""
         await ctx.send(
-            'I cannot send direct messages to one of the players. Please ensure '
+            '> I cannot send direct messages to one of the players. Please ensure '
             'that the privacy setting "Allow direct messages from server members" '
             'is enabled and that the bot is not blocked.'
         )
@@ -206,27 +205,27 @@ class BattleshipGame():
         try:
             x = self.letnum[value[0]]
         except (KeyError, IndexError):
-            await self.player[player].send('Invalid input, x cord must be a letter from A-J.')
+            await self.player[player].send('> Invalid input, x cord must be a letter from A-J.')
             return False
         try:
             y = int(value[1])
         except (ValueError, IndexError):
-            await self.player[player].send('Invalid input, y cord must be a number from 0-9.')
+            await self.player[player].send('> Invalid input, y cord must be a number from 0-9.')
             return False
         try:
             d = value[2]
         except IndexError:
-            await self.player[player].send('Invalid input, d cord must be a direction of d or r.')
+            await self.player[player].send('> Invalid input, d cord must be a direction of d or r.')
             return False
         try:
             if d == 'r':  # right
                 if 10 - length < x:  # ship would wrap over right edge
-                    await self.player[player].send('Invalid input, too far to the right.')
+                    await self.player[player].send('> Invalid input, too far to the right.')
                     return False
                 for z in range(length):
                     if self.board[player][(y * 10) + x + z] != 0:  # a spot taken by another ship
                         await self.player[player].send(
-                            'Invalid input, another ship is in that range.'
+                            '> Invalid input, another ship is in that range.'
                         )
                         return False
                 for z in range(length):
@@ -236,7 +235,7 @@ class BattleshipGame():
                 for z in range(length):
                     if self.board[player][((y + z) * 10) + x] != 0:  # a spot taken by another ship
                         await self.player[player].send(
-                            'Invalid input, another ship is in that range.'
+                            '> Invalid input, another ship is in that range.'
                         )
                         return False
                 for z in range(length):
@@ -244,11 +243,11 @@ class BattleshipGame():
                     hold[((y + z) * 10) + x] = 0
             else:
                 await self.player[player].send(
-                    'Invalid input, d cord must be a direction of d or r.'
+                    '> Invalid input, d cord must be a direction of d or r.'
                 )
                 return False
         except IndexError:
-            await self.player[player].send('Invalid input, too far down.')
+            await self.player[player].send('> Invalid input, too far down.')
             return False
         self.key[player].append(hold)
         self.ship_pos[player].append((x, y, d))
@@ -262,14 +261,14 @@ class BattleshipGame():
         for x in range(2):  # each player
             await self.ctx.send(f'Messaging {self.name[x]} for setup now.')
             privateMessage = await self.player[x].send(
-                f'{self.name[x]}, it is your turn to set up your ships.\n'
-                'Read this carefully before continuing. \n\n '
+                f'> {self.name[x]}, it is your turn to set up your ships.\n'
+                '> Read this carefully before continuing. \n\n '
                 '**Place ships by entering the top left coordinate using the letter of the column '
                 'followed by the number of the row and the direction of (r)ight or (d)own '
                 'in ColumnRowDirection format (such as c2r).**'
             )
             for ship_len in [5, 4, 3, 3, 2]:  # each ship length
-                await self.send_board(x, 1, self.player[x], f'Place your {ship_len} length ship.')
+                await self.send_board(x, 1, self.player[x], f'> Place your {ship_len} length ship.')
                 while True:
                     if isinstance(self.player[x], BattleshipAI):
                         await asyncio.sleep(1)
@@ -286,7 +285,7 @@ class BattleshipGame():
                             )
                             cords = cords.content
                         except asyncio.TimeoutError:
-                            await self.ctx.send(f'{self.name[x]} took too long, shutting down.')
+                            await self.ctx.send(f'> {self.name[x]} took too long, shutting down.')
                             return
                     if await self._place(x, ship_len, cords.lower()):  # only break if _place succeeded
                         break
@@ -300,9 +299,9 @@ class BattleshipGame():
                 mention = self.player[self.p].mention
             else:
                 mention = self.name[self.p]
-            await self.ctx.send(f'{mention}\'s turn!')
+            await self.ctx.send(f'> {mention}\'s turn!')
             await self.send_board(
-                pswap[self.p], 0, self.ctx, f'{self.name[self.p]}, take your shot.'
+                pswap[self.p], 0, self.ctx, f'> {self.name[self.p]}, take your shot.'
             )
             while True:
                 if isinstance(self.player[self.p], BattleshipAI):
@@ -328,7 +327,7 @@ class BattleshipGame():
                         )
                         cords = cords.content.lower()
                     except asyncio.TimeoutError:
-                        await self.ctx.send('You took too long, shutting down.')
+                        await self.ctx.send('> You took too long, shutting down.')
                         return
                 try:  # makes sure input is valid
                     x = self.letnum[cords[0]]
@@ -338,10 +337,10 @@ class BattleshipGame():
                 if self.board[pswap[self.p]][(y * 10) + x] == 0:
                     self.board[pswap[self.p]][(y * 10) + x] = 1
                     await self.update_dm(pswap[self.p])
-                    await self.send_board(pswap[self.p], 0, self.ctx, '**Miss!**')
+                    await self.send_board(pswap[self.p], 0, self.ctx, '> **Miss!**')
                     break
                 elif self.board[pswap[self.p]][(y * 10) + x] in [1, 2]:
-                    await self.ctx.send('You already shot there!')
+                    await self.ctx.send('> You already shot there!')
                 elif self.board[pswap[self.p]][(y * 10) + x] == 3:
                     self.board[pswap[self.p]][(y * 10) + x] = 2
                     # DEAD SHIP
@@ -355,16 +354,16 @@ class BattleshipGame():
                     if ship_dead:
                         msg = (
                             f'**Hit!**\n**{self.name[pswap[self.p]]}\'s '
-                            f'{ship_dead} length ship was destroyed!**'
+                            f'> {ship_dead} length ship was destroyed!**'
                         )
                         await self.send_board(pswap[self.p], 0, self.ctx, msg)
                     else:
-                        await self.send_board(pswap[self.p], 0, self.ctx, '**Hit!**')
+                        await self.send_board(pswap[self.p], 0, self.ctx, '> **Hit!**')
                     # DEAD PLAYER
                     if 3 not in self.board[pswap[self.p]]:
-                        await self.ctx.send(f'**{self.name[self.p]} wins!**')
+                        await self.ctx.send(f'> **{self.name[self.p]} wins!**')
                         return
                     if await self.cog.config.guild(self.ctx.guild).extraHit():
-                        await self.ctx.send('Take another shot.')
+                        await self.ctx.send('> Take another shot.')
                     else:
                         break

@@ -118,7 +118,7 @@ class Connect4Game:
         self.players = (player1, player2)
         self.player_ids = {p.id for p in self.players}
 
-        self.board = Board(14, 12)
+        self.board = Board(7, 6)
         self.turn_count = 0
         self._whomst_forfeited = 0
 
@@ -149,9 +149,9 @@ class Connect4Game:
             status = self._get_forfeit_status()
 
         return (
-            status
-            + instructions
-            + "\n".join(self._format_row(y) for y in range(self.board.height))
+                status
+                + instructions
+                + "\n".join(self._format_row(y) for y in range(self.board.height))
         )
 
     def _get_status(self):

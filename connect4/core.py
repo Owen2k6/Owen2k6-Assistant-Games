@@ -118,7 +118,7 @@ class Connect4Game:
         self.players = (player1, player2)
         self.player_ids = {p.id for p in self.players}
 
-        self.board = Board(7, 6)
+        self.board = Board(14, 12)
         self.turn_count = 0
         self._whomst_forfeited = 0
 
